@@ -39,3 +39,18 @@ async def render_pdf(data: dict):
         media_type="application/pdf",
         headers={"Content-Disposition": "attachment; filename=output.pdf"}
     )
+from fastapi import Query
+
+@app.get("/api/render")
+async def render_pdf_get(text: str = Query(default="", max_length=5000)):
+    buffer = io.BytesIO()
+    p = canvas.Canvas(buffer)
+    p.drawString(100, 750, text)
+    p.save()
+
+    buffer.seek(0)
+    return StreamingResponse(
+        buffer,
+        media_type="application/pdf",
+        headers={"Content-Disposition": "attachment; filename=output.pdf"}
+    )
