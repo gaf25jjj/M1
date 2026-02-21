@@ -17,32 +17,24 @@ pingButton.addEventListener("click", async () => {
 
 const textEl = document.getElementById("text");
 const pdfBtn = document.getElementById("pdf-btn");
-const pdfLink = document.getElementById("pdf-link");
 
 pdfBtn.addEventListener("click", async () => {
-  result.textContent = "Генерирую PDF...";
-  pdfLink.style.display = "none";
+  const text = textEl.value || "";
+  result.textContent = "Открываю ссылку на PDF...";
+
+  // Важно: делаем нормальный HTTPS URL (не blob)
+  const urlPath = `/api/render?text=${encodeURIComponent(text)}`;
+  const fullUrl = `${window.location.origin}${urlPath}`;
 
   try {
-    const resp = await fetch("/api/render", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text: textEl.value || "" }),
-    });
-
-    if (!resp.ok) {
-      const t = await resp.text();
-      throw new Error(t || `HTTP ${resp.status}`);
+    // В Telegram WebApp лучше открывать так
+    if (tg && tg.openLink) {
+      tg.openLink(fullUrl);
+    } else {
+      // В обычном браузере
+      window.open(fullUrl, "_blank");
     }
-
-    const blob = await resp.blob();
-    const url = URL.createObjectURL(blob);
-
-    pdfLink.href = url;
-    pdfLink.style.display = "inline-block";
-    pdfLink.textContent = "Скачать PDF ✅";
-
-    result.textContent = "Готово. Нажми «Скачать PDF»";
+    result.textContent = "Готово ✅ Если не началась загрузка — проверь всплывающие окна/загрузки.";
   } catch (e) {
     result.textContent = `Ошибка: ${e}`;
   }
