@@ -10,8 +10,17 @@
   <body>
     <main class="container">
       <h1>Мини WebApp</h1>
+
       <button id="ping-btn" type="button">Проверить /api/ping</button>
       <pre id="result">Нажмите кнопку</pre>
+
+      <hr />
+
+      <h2>PDF</h2>
+      <textarea id="text" rows="8" placeholder="Введи текст для PDF..."></textarea>
+      <button id="pdf-btn" type="button">Сгенерировать PDF</button>
+
+      <a id="pdf-link" href="#" target="_blank" style="display:none;">Скачать PDF</a>
     </main>
 
     <script src="/webapp/static/app.js"></script>
